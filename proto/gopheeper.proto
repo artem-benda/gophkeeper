@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+package gophkeeper;
+
+option go_package = "internal/grpc/gophkeeper";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+// Register
+message RegisterRequest {
+    string login = 1;
+    string password = 2;
+}
+
+message RegisterResponse {
+    string token = 1;
+}
+
+// Login
+message LoginRequest {
+    string login = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    string token = 1;
+}
+
+// Операции с Secret (абстракция нужна для использования с массовым применением изменений)
+
+message AddSecretCommand {
+    string guid = 1;
+    string name = 2;
+    google.protobuf.Timestamp client_timestamp = 3;
+    bytes payload = 4;
+}
+
+message UpdateSecretCommand {
+    string guid = 1;
+    string name = 2;
+    google.protobuf.Timestamp client_timestamp = 3;
+    bytes payload = 4;
+}
+
+message DeleteSecretCommand {
+    string guid = 1;
+}
+
+message SecretCommand {
+    oneof command {
+        AddSecretCommand add = 1;
+        UpdateSecretCommand update = 2;
+        DeleteSecretCommand delete = 3;
+    }
+    string command_guid = 4;
+}
+
+// Secret
+message Secret {
+    string guid = 1;
+    string name = 2;
+    google.protobuf.Timestamp created_at = 3;
+    google.protobuf.Timestamp updated_at = 4;
+    bytes payload = 5;
+    int32 version = 6;
+}
+
+// GetSecret
+message GetSecretRequest {
+    string guid = 1;
+}
+
+message GetSecretResponse {
+    Secret secret = 1;
+}
+
+// GetAllSecrets
+message GetAllSecretsResponse {
+    repeated Secret secrets = 1;
+}
+
+// GetSecretsUpdates - получить обновления с сервера, начиная с указанного id состояния
+message GetSecretsUpdatesRequest {
+    int64 secrets_last_change_id = 1;
+}
+
+message GetSecretsUpdatesResponse {
+    repeated Secret secrets = 1;
+}
+
+// ExecuteSecretCommand
+message ExecuteSecretCommandRequest {
+    SecretCommand command = 1;
+}
+
+message ExecuteSecretCommandResponse {
+    int64 secrets_last_change_id = 1;
+}
+
+// ExecuteSecretCommandsBatch - для синхронизации данных, измененных и не успешно обновленных на сервере
+message ExecuteSecretCommandsBatchRequest {
+    repeated SecretCommand commands = 1;
+}
+
+message ExecuteSecretCommandsBatchResponse {
+    int64 secrets_last_change_id = 1;
+    repeated string skipped_obsolette_commands_guids = 2;
+    repeated string skipped_concurrent_modified_commands_guids = 3;
+}
+
+service GophKeeperService {
+    rpc Register(RegisterRequest) returns (RegisterResponse);
+    rpc Login(LoginRequest) returns (LoginResponse);
+    rpc GetSecret(GetSecretRequest) returns (GetSecretResponse);
+    rpc GetAllSecrets(google.protobuf.Empty) returns (GetAllSecretsResponse);
+    rpc ExecuteSecretCommand(ExecuteSecretCommandRequest) returns (google.protobuf.Empty);
+    rpc ExecuteSecretCommandsBatch(ExecuteSecretCommandsBatchRequest) returns (ExecuteSecretCommandsBatchResponse);
+}
