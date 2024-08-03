@@ -1,4 +1,4 @@
-module github.com/artem-benda/gophermart/client
+module github.com/artem-benda/gphkeeper/client
 
 go 1.21.7
 
