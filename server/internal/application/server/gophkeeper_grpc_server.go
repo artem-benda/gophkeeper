@@ -15,12 +15,14 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// GophKeeperGrpcServer - реализация GRPC сервера
 type GophKeeperGrpcServer struct {
 	pb.UnimplementedGophKeeperServiceServer
 	USvc contract.UserService
 	SSvc contract.SecretService
 }
 
+// Register - Регистрация пользователя
 func (s *GophKeeperGrpcServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	if req.Login == "" || req.Password == "" {
 		return nil, status.Error(codes.InvalidArgument, "login or password cannot be empty")
@@ -39,6 +41,7 @@ func (s *GophKeeperGrpcServer) Register(ctx context.Context, req *pb.RegisterReq
 	return &pb.RegisterResponse{Token: token}, nil
 }
 
+// Login - Аутентификация пользователя
 func (s *GophKeeperGrpcServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
 	if req.Login == "" || req.Password == "" {
 		return nil, status.Error(codes.InvalidArgument, "login or password cannot be empty")
@@ -57,6 +60,7 @@ func (s *GophKeeperGrpcServer) Login(ctx context.Context, req *pb.LoginRequest) 
 	return &pb.LoginResponse{Token: token}, nil
 }
 
+// GetSecret - Получить запись секретной информации по guid для пользователя
 func (s *GophKeeperGrpcServer) GetSecret(ctx context.Context, req *pb.GetSecretRequest) (*pb.GetSecretResponse, error) {
 	userID := getUserIDFromContext(ctx)
 	secret, err := s.SSvc.Get(ctx, userID, req.GetGuid())
@@ -67,6 +71,7 @@ func (s *GophKeeperGrpcServer) GetSecret(ctx context.Context, req *pb.GetSecretR
 	return mapToGetSecretResponse(secret), nil
 }
 
+// GetAllSecrets - Получить все записи секретной информации для пользователя
 func (s *GophKeeperGrpcServer) GetAllSecrets(ctx context.Context, _ *emptypb.Empty) (*pb.GetAllSecretsResponse, error) {
 	userID := getUserIDFromContext(ctx)
 	secrets, err := s.SSvc.GetByUserID(ctx, userID)
@@ -77,6 +82,7 @@ func (s *GophKeeperGrpcServer) GetAllSecrets(ctx context.Context, _ *emptypb.Emp
 	return mapToGetAllSecretsResponse(secrets), nil
 }
 
+// AddSecret - Добавить запись секретной информации
 func (s *GophKeeperGrpcServer) AddSecret(ctx context.Context, req *pb.AddSecretRequest) (*emptypb.Empty, error) {
 	userID := getUserIDFromContext(ctx)
 	_, err := s.SSvc.Add(ctx, userID, req.Guid, req.Name, req.Payload, req.ClientTimestamp.AsTime())
@@ -87,6 +93,7 @@ func (s *GophKeeperGrpcServer) AddSecret(ctx context.Context, req *pb.AddSecretR
 	return &emptypb.Empty{}, nil
 }
 
+// UpdateSecret - Изменить запись секретной информации
 func (s *GophKeeperGrpcServer) UpdateSecret(ctx context.Context, req *pb.UpdateSecretRequest) (*emptypb.Empty, error) {
 	userID := getUserIDFromContext(ctx)
 	_, err := s.SSvc.Edit(ctx, userID, req.Guid, req.Name, req.Payload, req.ClientTimestamp.AsTime())
@@ -97,6 +104,7 @@ func (s *GophKeeperGrpcServer) UpdateSecret(ctx context.Context, req *pb.UpdateS
 	return &emptypb.Empty{}, nil
 }
 
+// DeleteSecret - Удалить запись секретной информации
 func (s *GophKeeperGrpcServer) DeleteSecret(ctx context.Context, req *pb.DeleteSecretRequest) (*emptypb.Empty, error) {
 	userID := getUserIDFromContext(ctx)
 	err := s.SSvc.Remove(ctx, userID, req.Guid)
