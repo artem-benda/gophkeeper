@@ -1,3 +1,4 @@
+// Package server - реализация GRPC сервера
 package server
 
 import (

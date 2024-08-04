@@ -1,3 +1,4 @@
+// Package jwt - работа с Json Web Token
 package jwt
 
 import (
@@ -6,6 +7,7 @@ import (
 	"time"
 )
 
+// Claims - JWT Claims приложения
 type Claims struct {
 	jwt.RegisteredClaims
 	UserID int64
@@ -36,6 +38,7 @@ func BuildJWTString(userID int64) (string, error) {
 	return tokenString, nil
 }
 
+// GetUserID - Получить идентификатор пользователя из JWT или -1, если не удалось получить ID
 func GetUserID(tokenString string) int64 {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims,

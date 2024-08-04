@@ -1,3 +1,4 @@
+// Package main - точка входа и вспомогательные методы запуска приложения
 package main
 
 import (
@@ -5,6 +6,7 @@ import (
 	"log/slog"
 )
 
+// main - точка входа приложения
 func main() {
 	slog.Info("Starting client application", slog.String("versionInfo", VersionString()))
 	config := mustReadConfig()

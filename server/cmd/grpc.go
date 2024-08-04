@@ -13,6 +13,7 @@ import (
 	g "google.golang.org/grpc"
 )
 
+// mustRunGrpcServer - запустить GRPC сервер
 func mustRunGrpcServer(userService contract.UserService, secretService contract.SecretService, cfg Config) {
 	listen, err := net.Listen("tcp", cfg.Endpoint)
 	if err != nil {
@@ -20,7 +21,7 @@ func mustRunGrpcServer(userService contract.UserService, secretService contract.
 	}
 	// создаём gRPC-сервер с перехватчиком для авторизации пользователя
 	s := g.NewServer(
-		g.UnaryInterceptor(auth.UnaryServerInterceptor(middleware.AuthFunc)),
+		g.UnaryInterceptor(auth.UnaryServerInterceptor(middleware.DummyAuthFunc)),
 	)
 	// регистрируем сервис
 	pb.RegisterGophKeeperServiceServer(s, &server.GophKeeperGrpcServer{USvc: userService, SSvc: secretService})

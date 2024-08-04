@@ -8,6 +8,7 @@ var (
 	buildCommit  string
 )
 
+// VersionString - получить строковое представление версии приложения
 func VersionString() string {
 	var sb strings.Builder
 	sb.WriteString("Build version: ")

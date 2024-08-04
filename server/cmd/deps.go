@@ -9,11 +9,13 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// appDependencies - зависимости приложения, требуемые для запуска GRPC сервера
 type appDependencies struct {
 	userService   contract.UserService
 	secretService contract.SecretService
 }
 
+// mustCreateAppDependencies - создать зависимости приложения
 func mustCreateAppDependencies(dbPool *pgxpool.Pool, cfg Config) *appDependencies {
 	userDAO := db.UserDAO{DB: dbPool}
 	userRepo := repository.NewUserRepository(userDAO)
@@ -24,6 +26,7 @@ func mustCreateAppDependencies(dbPool *pgxpool.Pool, cfg Config) *appDependencie
 	return &appDependencies{userService, secretService}
 }
 
+// mustGetSalt - Получить соль для хэширования паролей
 func (c Config) mustGetSalt() []byte {
 	salt, err := base64.StdEncoding.DecodeString(c.Salt)
 	if err != nil {

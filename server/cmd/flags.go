@@ -6,12 +6,14 @@ import (
 	"github.com/caarlos0/env/v10"
 )
 
+// Config - конфигурация приложения
 type Config struct {
 	Endpoint    string `env:"RUN_ADDRESS"`
 	DatabaseDSN string `env:"DATABASE_URI"`
 	Salt        string `env:"SALT"`
 }
 
+// mustReadConfig - прочитать конфигурацию, переданную при запуске приложения
 func mustReadConfig() Config {
 	var config Config
 
