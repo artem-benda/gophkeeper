@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"github.com/gofiber/fiber/v3/log"
 
 	"github.com/caarlos0/env/v10"
 )
@@ -22,7 +21,7 @@ func mustReadConfig() Config {
 
 	flag.Parse()
 	if err := env.Parse(&config); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	return config

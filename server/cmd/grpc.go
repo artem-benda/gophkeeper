@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
+	"net"
+
 	pb "github.com/artem-benda/gophkeeper/server/internal/application/grpc"
 	"github.com/artem-benda/gophkeeper/server/internal/application/server"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/contract"
-	"go.uber.org/zap"
 	g "google.golang.org/grpc"
-	"log/slog"
-	"net"
 )
 
 func mustRunGrpcServer(userService contract.UserService, secretService contract.SecretService, cfg Config) {
@@ -23,6 +23,6 @@ func mustRunGrpcServer(userService contract.UserService, secretService contract.
 
 	fmt.Println("Сервер gRPC начал работу...")
 	if err := s.Serve(listen); err != nil {
-		slog.Error("server sut down", zap.Error(err))
+		slog.Error("server sut down", slog.Any("error", err))
 	}
 }
