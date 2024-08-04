@@ -2,9 +2,13 @@ package server
 
 import (
 	"context"
+
+	"log/slog"
+
 	pb "github.com/artem-benda/gophkeeper/server/internal/application/grpc"
 	"github.com/artem-benda/gophkeeper/server/internal/application/jwt"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/contract"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -100,4 +104,26 @@ func (s *GophKeeperGrpcServer) DeleteSecret(ctx context.Context, req *pb.DeleteS
 	}
 
 	return &emptypb.Empty{}, nil
+}
+
+var UserIDKey struct{}
+
+// AuthFuncOverride - Метод, используемый middleware Auth - имеет приоритет над AuthFunc
+func (s *GophKeeperGrpcServer) AuthFuncOverride(ctx context.Context, fullMethodName string) (context.Context, error) {
+	slog.Debug("client is calling method: ", fullMethodName)
+	if fullMethodName == "Register" || fullMethodName == "Login" {
+		return ctx, nil
+	}
+
+	token, err := auth.AuthFromMD(ctx, "bearer")
+	if err != nil {
+		return nil, err
+	}
+
+	userID := jwt.GetUserID(token)
+	if userID == -1 {
+		return nil, status.Errorf(codes.Unauthenticated, "invalid auth token: %v", err)
+	}
+
+	return context.WithValue(ctx, UserIDKey, userID), nil
 }
