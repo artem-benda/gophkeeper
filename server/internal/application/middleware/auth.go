@@ -2,11 +2,14 @@ package middleware
 
 import (
 	"context"
+
 	"github.com/artem-benda/gophkeeper/server/internal/application/jwt"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+var UserIDKey struct{}
 
 func AuthFunc(ctx context.Context) (context.Context, error) {
 	token, err := auth.AuthFromMD(ctx, "bearer")
@@ -19,5 +22,5 @@ func AuthFunc(ctx context.Context) (context.Context, error) {
 		return nil, status.Errorf(codes.Unauthenticated, "invalid auth token: %v", err)
 	}
 
-	return context.WithValue(ctx, "userID", userID), nil
+	return context.WithValue(ctx, UserIDKey, userID), nil
 }
