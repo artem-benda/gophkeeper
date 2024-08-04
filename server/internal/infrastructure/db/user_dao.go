@@ -13,7 +13,7 @@ type UserDAO struct {
 	DB *pgxpool.Pool
 }
 
-func (dao UserDAO) GetByLogin(ctx context.Context, login string) (*entity.User, error) {
+func (dao *UserDAO) GetByLogin(ctx context.Context, login string) (*entity.User, error) {
 	user := entity.User{}
 
 	row := dao.DB.QueryRow(ctx, "SELECT id, login, password_hash FROM users WHERE login = $1", login)
@@ -27,7 +27,7 @@ func (dao UserDAO) GetByLogin(ctx context.Context, login string) (*entity.User, 
 	return &user, nil
 }
 
-func (dao UserDAO) GetByID(ctx context.Context, userID int64) (*entity.User, error) {
+func (dao *UserDAO) GetByID(ctx context.Context, userID int64) (*entity.User, error) {
 	user := entity.User{}
 
 	row := dao.DB.QueryRow(ctx, "SELECT id, login, password_hash FROM users WHERE id = $1", userID)
@@ -38,7 +38,7 @@ func (dao UserDAO) GetByID(ctx context.Context, userID int64) (*entity.User, err
 	return &user, nil
 }
 
-func (dao UserDAO) Insert(ctx context.Context, user entity.User) (*int64, error) {
+func (dao *UserDAO) Insert(ctx context.Context, user entity.User) (*int64, error) {
 	userID := new(int64)
 	row := dao.DB.QueryRow(ctx, "insert into users(login, password_hash) values($1, $2) returning id", user.Login, user.PasswordHash)
 	err := row.Scan(userID)

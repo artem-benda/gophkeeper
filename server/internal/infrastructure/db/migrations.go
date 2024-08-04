@@ -1,3 +1,4 @@
+// Package db - работа с БД Postgres
 package db
 
 import (
@@ -11,6 +12,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// MustRunDBMigrations - выполнить миграции для создания структуры БД
 func MustRunDBMigrations(dbURL string) {
 	d, err := iofs.New(gophkeeper.FS, "db/migrations")
 	if err != nil {
@@ -25,6 +27,7 @@ func MustRunDBMigrations(dbURL string) {
 	}
 }
 
+// MustCreateConnectionPool - создать pool соединений
 func MustCreateConnectionPool(databaseDSN string) *pgxpool.Pool {
 	dbPool, err := pgxpool.New(context.Background(), databaseDSN)
 	if err != nil {

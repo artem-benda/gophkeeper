@@ -19,21 +19,21 @@ func NewSecretRepository(dao db.SecretDAO) contract.SecretRepository {
 }
 
 func (s *secretRepository) Insert(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) (*int64, error) {
-	return s.Insert(ctx, userID, guid, name, encPayload, clientTimestamp)
+	return s.DAO.Insert(ctx, userID, guid, name, encPayload, clientTimestamp)
 }
 
-func (s *secretRepository) Update(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) (*int64, error) {
-	return s.Update(ctx, userID, guid, name, encPayload, clientTimestamp)
+func (s *secretRepository) Update(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) error {
+	return s.DAO.Update(ctx, userID, guid, name, encPayload, clientTimestamp)
 }
 
 func (s *secretRepository) Delete(ctx context.Context, userID int64, guid string) error {
-	return s.Delete(ctx, userID, guid)
+	return s.DAO.Delete(ctx, userID, guid)
 }
 
 func (s *secretRepository) Get(ctx context.Context, userID int64, guid string) (*entity.Secret, error) {
-	return s.Get(ctx, userID, guid)
+	return s.DAO.GetByGUID(ctx, userID, guid)
 }
 
 func (s *secretRepository) GetByUserID(ctx context.Context, userID int64) ([]entity.Secret, error) {
-	return s.GetByUserID(ctx, userID)
+	return s.DAO.GetByUserID(ctx, userID)
 }

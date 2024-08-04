@@ -21,7 +21,7 @@ func (s Secret) Add(ctx context.Context, userID int64, guid string, name string,
 	return s.repo.Insert(ctx, userID, guid, name, encPayload, clientTimestamp)
 }
 
-func (s Secret) Edit(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) (*int64, error) {
+func (s Secret) Edit(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) error {
 	return s.repo.Update(ctx, userID, guid, name, encPayload, clientTimestamp)
 }
 

@@ -97,7 +97,7 @@ func (s *GophKeeperGrpcServer) AddSecret(ctx context.Context, req *pb.AddSecretR
 // UpdateSecret - Изменить запись секретной информации
 func (s *GophKeeperGrpcServer) UpdateSecret(ctx context.Context, req *pb.UpdateSecretRequest) (*emptypb.Empty, error) {
 	userID := getUserIDFromContext(ctx)
-	_, err := s.SSvc.Edit(ctx, userID, req.Guid, req.Name, req.Payload, req.ClientTimestamp.AsTime())
+	err := s.SSvc.Edit(ctx, userID, req.Guid, req.Name, req.Payload, req.ClientTimestamp.AsTime())
 	if err != nil {
 		return nil, mapSecretError(err)
 	}
