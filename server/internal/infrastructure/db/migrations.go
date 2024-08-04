@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func mustRunDBMigrations(dbURL string) {
+func MustRunDBMigrations(dbURL string) {
 	d, err := iofs.New(gophkeeper.FS, "db/migrations")
 	if err != nil {
 		panic(err)
@@ -25,7 +25,7 @@ func mustRunDBMigrations(dbURL string) {
 	}
 }
 
-func mustCreateConnectionPool(databaseDSN string) *pgxpool.Pool {
+func MustCreateConnectionPool(databaseDSN string) *pgxpool.Pool {
 	dbPool, err := pgxpool.New(context.Background(), databaseDSN)
 	if err != nil {
 		panic(err)

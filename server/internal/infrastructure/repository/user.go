@@ -11,13 +11,17 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-var _ contract.UserRepository = (*UserRepository)(nil)
+var _ contract.UserRepository = (*userRepository)(nil)
 
-type UserRepository struct {
+type userRepository struct {
 	DAO db.UserDAO
 }
 
-func (r *UserRepository) Register(ctx context.Context, login string, passwordHash string) (*int64, error) {
+func NewUserRepository(dao db.UserDAO) contract.UserRepository {
+	return &userRepository{dao}
+}
+
+func (r *userRepository) Register(ctx context.Context, login string, passwordHash string) (*int64, error) {
 	id, err := r.DAO.Insert(ctx, entity.User{Login: login, PasswordHash: passwordHash})
 	var pgErr *pgconn.PgError
 	if errors.As(err, &pgErr) && pgErr.Code == pgerrcode.IntegrityConstraintViolation {
@@ -26,10 +30,10 @@ func (r *UserRepository) Register(ctx context.Context, login string, passwordHas
 	return id, err
 }
 
-func (r *UserRepository) GetUserByLogin(ctx context.Context, login string) (*entity.User, error) {
+func (r *userRepository) GetUserByLogin(ctx context.Context, login string) (*entity.User, error) {
 	return r.DAO.GetByLogin(ctx, login)
 }
 
-func (r *UserRepository) GetUserByID(ctx context.Context, userID int64) (*entity.User, error) {
+func (r *userRepository) GetUserByID(ctx context.Context, userID int64) (*entity.User, error) {
 	return r.DAO.GetByID(ctx, userID)
 }

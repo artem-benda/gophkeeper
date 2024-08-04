@@ -10,18 +10,18 @@ import (
 	"log/slog"
 )
 
-var _ contract.UserService = (*User)(nil)
+var _ contract.UserService = (*user)(nil)
 
 func NewUserService(repo contract.UserRepository, salt []byte) contract.UserService {
-	return &User{repo: repo, salt: salt}
+	return &user{repo: repo, salt: salt}
 }
 
-type User struct {
+type user struct {
 	repo contract.UserRepository
 	salt []byte
 }
 
-func (u User) Register(ctx context.Context, login, password string) (*int64, error) {
+func (u *user) Register(ctx context.Context, login, password string) (*int64, error) {
 	passwordHash, err := computeHash(password, u.salt)
 
 	if err != nil {
@@ -32,7 +32,7 @@ func (u User) Register(ctx context.Context, login, password string) (*int64, err
 	return u.repo.Register(ctx, login, *passwordHash)
 }
 
-func (u User) Login(ctx context.Context, login, password string) (*int64, error) {
+func (u *user) Login(ctx context.Context, login, password string) (*int64, error) {
 	passwordHashString, err := computeHash(password, u.salt)
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func (u User) Login(ctx context.Context, login, password string) (*int64, error)
 	return &user.ID, nil
 }
 
-func (u User) GetUserByID(ctx context.Context, userID int64) (*entity.User, error) {
+func (u *user) GetUserByID(ctx context.Context, userID int64) (*entity.User, error) {
 	user, err := u.repo.GetUserByID(ctx, userID)
 	if err != nil {
 		slog.Error("error getting user by ID: ", err)

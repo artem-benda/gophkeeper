@@ -8,28 +8,32 @@ import (
 	"time"
 )
 
-var _ contract.SecretRepository = (*SecretRepository)(nil)
+var _ contract.SecretRepository = (*secretRepository)(nil)
 
-type SecretRepository struct {
+type secretRepository struct {
 	DAO db.SecretDAO
 }
 
-func (s SecretRepository) Insert(ctx context.Context, guid string, name string, encPayload []byte, clientTimestamp time.Time) (*int64, error) {
-	return s.Insert(ctx, guid, name, encPayload, clientTimestamp)
+func NewSecretRepository(dao db.SecretDAO) contract.SecretRepository {
+	return &secretRepository{DAO: dao}
 }
 
-func (s SecretRepository) Update(ctx context.Context, guid string, name string, encPayload []byte, clientTimestamp time.Time) (*int64, error) {
-	return s.Update(ctx, guid, name, encPayload, clientTimestamp)
+func (s *secretRepository) Insert(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) (*int64, error) {
+	return s.Insert(ctx, userID, guid, name, encPayload, clientTimestamp)
 }
 
-func (s SecretRepository) Delete(ctx context.Context, guid string) error {
-	return s.Delete(ctx, guid)
+func (s *secretRepository) Update(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) (*int64, error) {
+	return s.Update(ctx, userID, guid, name, encPayload, clientTimestamp)
 }
 
-func (s SecretRepository) Get(ctx context.Context, guid string) (*entity.Secret, error) {
-	return s.Get(ctx, guid)
+func (s *secretRepository) Delete(ctx context.Context, userID int64, guid string) error {
+	return s.Delete(ctx, userID, guid)
 }
 
-func (s SecretRepository) GetByUserID(ctx context.Context, userID int64) ([]entity.Secret, error) {
+func (s *secretRepository) Get(ctx context.Context, userID int64, guid string) (*entity.Secret, error) {
+	return s.Get(ctx, userID, guid)
+}
+
+func (s *secretRepository) GetByUserID(ctx context.Context, userID int64) ([]entity.Secret, error) {
 	return s.GetByUserID(ctx, userID)
 }
