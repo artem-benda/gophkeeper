@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"strings"
 
 	"log/slog"
 
@@ -111,7 +112,7 @@ var UserIDKey struct{}
 // AuthFuncOverride - Метод, используемый middleware Auth - имеет приоритет над AuthFunc
 func (s *GophKeeperGrpcServer) AuthFuncOverride(ctx context.Context, fullMethodName string) (context.Context, error) {
 	slog.Debug("client is calling method: ", fullMethodName)
-	if fullMethodName == "Register" || fullMethodName == "Login" {
+	if strings.HasSuffix(fullMethodName, "Register") || strings.HasSuffix(fullMethodName, "Login") {
 		return ctx, nil
 	}
 
