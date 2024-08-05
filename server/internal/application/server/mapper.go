@@ -2,9 +2,9 @@ package server
 
 import (
 	"errors"
-	pb "github.com/artem-benda/gophkeeper/server/internal/application/grpc"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/contract"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/entity"
+	pb "github.com/artem-benda/gophkeeper/server/internal/infrastructure/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
