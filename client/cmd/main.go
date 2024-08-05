@@ -1,16 +1,16 @@
 package main
 
 import (
+	"github.com/artem-benda/gphkeeper/client/internal/application/command"
 	"log/slog"
-
-	"github.com/artem-benda/gophermart/client/internal/application"
 )
 
 func main() {
 	slog.Info("Starting client application", slog.String("versionInfo", VersionString()))
-	config := mustReadConfig()
-	db := mustCreateDB(config.DatabaseFilePath)
-	app := application.NewApp()
-
-	app.Run(db)
+	var opts = new(Options)
+	parser := mustParseOptions(opts)
+	err := command.HandleRegisterCommand(parser, opts)
+	if err != nil {
+		slog.Error("Failed to execute register  ", err)
+	}
 }
