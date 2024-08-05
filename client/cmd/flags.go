@@ -5,17 +5,15 @@ import (
 )
 
 type Config struct {
-	CryptoKey        string
-	DatabaseFilePath string
-	LogLevel         string
+	Endpoint  string
+	CryptoKey string
 }
 
 func mustReadConfig() Config {
 	var config Config
 
-	flag.StringVar(&config.CryptoKey, "key", "", "crypto key to store your data securely")
-	flag.StringVar(&config.DatabaseFilePath, "db", "./default.db", "path or connection url to local sqlite database")
-	flag.StringVar(&config.LogLevel, "l", "debug", "logging level: debug, info, warn, error, dpanic, panic, fatal")
+	flag.StringVar(&config.Endpoint, "e", "localhost:8080", "address and port of server to connect to")
+	flag.StringVar(&config.CryptoKey, "k", "", "crypto key to store your data securely")
 	flag.Parse()
 
 	return config

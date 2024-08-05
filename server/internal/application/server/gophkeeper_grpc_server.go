@@ -7,9 +7,9 @@ import (
 
 	"log/slog"
 
-	pb "github.com/artem-benda/gophkeeper/server/internal/application/grpc"
 	"github.com/artem-benda/gophkeeper/server/internal/application/jwt"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/contract"
+	pb "github.com/artem-benda/gophkeeper/server/internal/infrastructure/grpc"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
