@@ -3,8 +3,6 @@ package server
 
 import (
 	"context"
-	"strings"
-
 	"log/slog"
 
 	"github.com/artem-benda/gophkeeper/server/internal/application/jwt"
@@ -121,7 +119,8 @@ var UserIDKey struct{}
 // AuthFuncOverride - Метод, используемый middleware Auth - имеет приоритет над AuthFunc
 func (s *GophKeeperGrpcServer) AuthFuncOverride(ctx context.Context, fullMethodName string) (context.Context, error) {
 	slog.Debug("client is calling method: ", fullMethodName)
-	if strings.HasSuffix(fullMethodName, "Register") || strings.HasSuffix(fullMethodName, "Login") {
+	// Для этих методов не нужна авторизация
+	if fullMethodName == pb.GophKeeperService_Register_FullMethodName || fullMethodName == pb.GophKeeperService_Login_FullMethodName {
 		return ctx, nil
 	}
 
