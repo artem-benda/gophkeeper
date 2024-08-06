@@ -1,7 +1,7 @@
 package command
 
 import (
-	"github.com/artem-benda/gphkeeper/client/internal/domain/contract"
+	"github.com/artem-benda/gphkeeper/client/internal/application"
 	"github.com/jessevdk/go-flags"
 )
 
@@ -10,13 +10,10 @@ type RegisterCommand struct {
 	password string `long:"password" description:"password, non empty string" required:"true"`
 }
 
-type RegisterCommandDeps struct {
-	US contract.UserService
+func IsRegisterCommand(parser *flags.Parser) bool {
+	return parser.Command.Find("register") != nil
 }
 
-func (d *RegisterCommandDeps) HandleRegisterCommand(parser *flags.Parser, cmd *RegisterCommand) error {
-	if parser.Command.Find("register") == nil {
-		return d.US.Register(cmd.login, cmd.password)
-	}
-	return nil
+func HandleRegisterCommand(deps *application.AppDependencies, parser *flags.Parser, cmd *RegisterCommand) error {
+	return deps.US.Register(cmd.login, cmd.password)
 }
