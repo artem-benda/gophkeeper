@@ -3,10 +3,11 @@ package db
 import (
 	"context"
 	"errors"
+	"time"
+
 	"github.com/artem-benda/gophkeeper/server/internal/domain/entity"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"time"
 )
 
 // SecretDAO - методы для работы с секретами
@@ -55,7 +56,7 @@ func (dao *SecretDAO) GetByUserID(ctx context.Context, userID int64) ([]entity.S
 func (dao *SecretDAO) Insert(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) (*int64, error) {
 	secretID := new(int64)
 	row := dao.DB.QueryRow(ctx, "insert into secrets(guid, name, enc_payload, created_at) values($1, $2, $3, $4) returning id", userID, name, encPayload, clientTimestamp)
-	err := row.Scan(userID)
+	err := row.Scan(secretID)
 	if err != nil {
 		return nil, err
 	}

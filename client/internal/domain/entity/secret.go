@@ -7,7 +7,6 @@ import "time"
 type Secret struct {
 	GUID       string
 	Name       string
-	Metadata   string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	EncPayload []byte

@@ -2,9 +2,11 @@ package service
 
 import (
 	"context"
+	"time"
+
 	"github.com/artem-benda/gophkeeper/server/internal/domain/contract"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/entity"
-	"time"
+	"github.com/google/uuid"
 )
 
 var _ contract.SecretService = (*Secret)(nil)
@@ -17,12 +19,17 @@ type Secret struct {
 	repo contract.SecretRepository
 }
 
-func (s Secret) Add(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) (*int64, error) {
-	return s.repo.Insert(ctx, userID, guid, name, encPayload, clientTimestamp)
+func (s Secret) Add(ctx context.Context, userID int64, name string, encPayload []byte) (string, error) {
+	guid := uuid.New().String()
+	_, err := s.repo.Insert(ctx, userID, guid, name, encPayload, time.Now())
+	if err != nil {
+		return "", err
+	}
+	return guid, nil
 }
 
-func (s Secret) Edit(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) error {
-	return s.repo.Update(ctx, userID, guid, name, encPayload, clientTimestamp)
+func (s Secret) Edit(ctx context.Context, userID int64, guid string, name string, encPayload []byte) error {
+	return s.repo.Update(ctx, userID, guid, name, encPayload, time.Now())
 }
 
 func (s Secret) Remove(ctx context.Context, userID int64, guid string) error {

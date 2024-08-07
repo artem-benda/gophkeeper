@@ -51,29 +51,21 @@ message GetAllSecretsResponse {
     repeated Secret secrets = 1;
 }
 
-// GetSecretsUpdates - получить обновления с сервера, начиная с указанного id состояния
-message GetSecretsUpdatesRequest {
-    int64 secrets_last_change_id = 1;
-}
-
-message GetSecretsUpdatesResponse {
-    repeated Secret secrets = 1;
-}
-
 // AddSecret
 message AddSecretRequest {
+    string name = 1;
+    bytes payload = 2;
+}
+
+message AddSecretResponse {
     string guid = 1;
-    string name = 2;
-    google.protobuf.Timestamp client_timestamp = 3;
-    bytes payload = 4;
 }
 
 // UpdateSecret
 message UpdateSecretRequest {
     string guid = 1;
     string name = 2;
-    google.protobuf.Timestamp client_timestamp = 3;
-    bytes payload = 4;
+    bytes payload = 3;
 }
 
 // DeleteSecret
@@ -86,7 +78,7 @@ service GophKeeperService {
     rpc Login(LoginRequest) returns (LoginResponse);
     rpc GetSecret(GetSecretRequest) returns (GetSecretResponse);
     rpc GetAllSecrets(google.protobuf.Empty) returns (GetAllSecretsResponse);
-    rpc AddSecret(AddSecretRequest) returns (google.protobuf.Empty);
+    rpc AddSecret(AddSecretRequest) returns (AddSecretResponse);
     rpc UpdateSecret(UpdateSecretRequest) returns (google.protobuf.Empty);
     rpc DeleteSecret(DeleteSecretRequest) returns (google.protobuf.Empty);
 }

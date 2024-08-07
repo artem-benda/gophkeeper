@@ -1,4 +1,4 @@
-module github.com/artem-benda/gphkeeper/client
+module github.com/artem-benda/gophkeeper/client
 
 go 1.21.7
 
