@@ -2,15 +2,17 @@ package server
 
 import (
 	"errors"
+	"time"
+
 	"github.com/artem-benda/gophkeeper/server/internal/domain/contract"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/entity"
 	pb "github.com/artem-benda/gophkeeper/server/internal/infrastructure/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"time"
 )
 
+// mapUserError - маппинг ошибок в GRPC ошибки
 func mapUserError(err error) error {
 	if err == nil {
 		return nil
@@ -26,6 +28,7 @@ func mapUserError(err error) error {
 	}
 }
 
+// mapSecretError - маппинг ошибок в GRPC ошибки
 func mapSecretError(err error) error {
 	if err == nil {
 		return nil
@@ -41,6 +44,7 @@ func mapSecretError(err error) error {
 	}
 }
 
+// mapToGetSecretResponse - маппинг доменной модели в grpc dto
 func mapToGetSecretResponse(s *entity.Secret) *pb.GetSecretResponse {
 	return &pb.GetSecretResponse{
 		Secret: &pb.Secret{
@@ -53,6 +57,7 @@ func mapToGetSecretResponse(s *entity.Secret) *pb.GetSecretResponse {
 	}
 }
 
+// mapToGetAllSecretsResponse - маппинг доменной модели в grpc dto
 func mapToGetAllSecretsResponse(ss []entity.Secret) *pb.GetAllSecretsResponse {
 	secrets := make([]*pb.Secret, len(ss))
 	for i, s := range ss {
@@ -67,6 +72,7 @@ func mapToGetAllSecretsResponse(ss []entity.Secret) *pb.GetAllSecretsResponse {
 	return &pb.GetAllSecretsResponse{Secrets: secrets}
 }
 
+// mapToProtoTimestamp - маппинг даты
 func mapToProtoTimestamp(t time.Time) *timestamppb.Timestamp {
 	return timestamppb.New(t)
 }

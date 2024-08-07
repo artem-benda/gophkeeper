@@ -2,37 +2,51 @@ package service
 
 import (
 	"context"
+	"time"
+
 	"github.com/artem-benda/gophkeeper/server/internal/domain/contract"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/entity"
-	"time"
+	"github.com/google/uuid"
 )
 
-var _ contract.SecretService = (*Secret)(nil)
+var _ contract.SecretService = (*secret)(nil)
 
+// NewSecretService returns new instance of SecretService
 func NewSecretService(repo contract.SecretRepository) contract.SecretService {
-	return &Secret{repo: repo}
+	return &secret{repo: repo}
 }
 
-type Secret struct {
+// secret is an implementation of contract.SecretService
+type secret struct {
 	repo contract.SecretRepository
 }
 
-func (s Secret) Add(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) (*int64, error) {
-	return s.repo.Insert(ctx, userID, guid, name, encPayload, clientTimestamp)
+// Add adds new secret to database
+func (s secret) Add(ctx context.Context, userID int64, name string, encPayload []byte) (string, error) {
+	guid := uuid.New().String()
+	_, err := s.repo.Insert(ctx, userID, guid, name, encPayload, time.Now())
+	if err != nil {
+		return "", err
+	}
+	return guid, nil
 }
 
-func (s Secret) Edit(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) error {
-	return s.repo.Update(ctx, userID, guid, name, encPayload, clientTimestamp)
+// Edit edits existing secret in database
+func (s secret) Edit(ctx context.Context, userID int64, guid string, name string, encPayload []byte) error {
+	return s.repo.Update(ctx, userID, guid, name, encPayload, time.Now())
 }
 
-func (s Secret) Remove(ctx context.Context, userID int64, guid string) error {
+// Remove removes existing secret from database
+func (s secret) Remove(ctx context.Context, userID int64, guid string) error {
 	return s.repo.Delete(ctx, userID, guid)
 }
 
-func (s Secret) Get(ctx context.Context, userID int64, guid string) (*entity.Secret, error) {
+// Get returns existing secret from database for user and guid
+func (s secret) Get(ctx context.Context, userID int64, guid string) (*entity.Secret, error) {
 	return s.repo.Get(ctx, userID, guid)
 }
 
-func (s Secret) GetByUserID(ctx context.Context, userID int64) ([]entity.Secret, error) {
+// GetByUserID returns existing secrets from database by user ID
+func (s secret) GetByUserID(ctx context.Context, userID int64) ([]entity.Secret, error) {
 	return s.repo.GetByUserID(ctx, userID)
 }

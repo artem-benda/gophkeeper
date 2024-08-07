@@ -4,23 +4,27 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"log/slog"
+
 	"github.com/artem-benda/gophkeeper/server/internal/domain/contract"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/entity"
 	"golang.org/x/crypto/pbkdf2"
-	"log/slog"
 )
 
 var _ contract.UserService = (*user)(nil)
 
+// NewUserService creates new user service
 func NewUserService(repo contract.UserRepository, salt []byte) contract.UserService {
 	return &user{repo: repo, salt: salt}
 }
 
+// user implements contract.UserService
 type user struct {
 	repo contract.UserRepository
 	salt []byte
 }
 
+// Register registers new user
 func (u *user) Register(ctx context.Context, login, password string) (*int64, error) {
 	passwordHash, err := computeHash(password, u.salt)
 
@@ -32,6 +36,7 @@ func (u *user) Register(ctx context.Context, login, password string) (*int64, er
 	return u.repo.Register(ctx, login, *passwordHash)
 }
 
+// Login logs in user
 func (u *user) Login(ctx context.Context, login, password string) (*int64, error) {
 	passwordHashString, err := computeHash(password, u.salt)
 	if err != nil {
@@ -57,6 +62,7 @@ func (u *user) Login(ctx context.Context, login, password string) (*int64, error
 	return &user.ID, nil
 }
 
+// GetUserByID gets user by ID from database
 func (u *user) GetUserByID(ctx context.Context, userID int64) (*entity.User, error) {
 	user, err := u.repo.GetUserByID(ctx, userID)
 	if err != nil {

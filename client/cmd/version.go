@@ -10,6 +10,7 @@ var (
 	buildCommit  string
 )
 
+// VersionString returns the build version as a string.
 func VersionString() string {
 	var sb strings.Builder
 	sb.WriteString("Build version: ")
