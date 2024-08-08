@@ -35,7 +35,7 @@ func (r *secretRepository) Register(ctx context.Context, login string, password 
 	return err
 }
 
-func (r *secretRepository) Add(ctx context.Context, guid string, name string, encPayload []byte) (string, error) {
+func (r *secretRepository) Add(ctx context.Context, name string, encPayload []byte) (string, error) {
 	req := &pb.AddSecretRequest{Name: name, Payload: encPayload}
 	resp, err := r.c.AddSecret(ctx, req)
 	if err != nil {

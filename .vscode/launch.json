@@ -5,11 +5,33 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Package",
+            "name": "Launch Client - Register",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/client/cmd",
+            "args": ["register", "--login=${input:login}", "--password=${input:password}"]
+        },
+        {
+            "name": "Launch Server",
             "type": "go",
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/server/cmd"
         }
+    ],
+    "inputs": [
+      {
+        "id": "login",
+        "type": "promptString",
+        "description": "Enter login",
+        "default": "testuser"
+      },
+      {
+        "id": "password",
+        "type": "promptString",
+        "description": "Enter password",
+        "default": "testuser123"
+      }
     ]
 }

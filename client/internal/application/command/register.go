@@ -1,13 +1,15 @@
 package command
 
 import (
-	"github.com/artem-benda/gphkeeper/client/internal/application"
+	"context"
+
+	"github.com/artem-benda/gophkeeper/client/internal/application"
 	"github.com/jessevdk/go-flags"
 )
 
 type RegisterCommand struct {
-	login    string `long:"login" description:"username, non empty string" required:"true"`
-	password string `long:"password" description:"password, non empty string" required:"true"`
+	Login    string `short:"l" long:"login" description:"username, non empty string" required:"true"`
+	Password string `short:"p" long:"password" description:"password, non empty string" required:"true"`
 }
 
 func IsRegisterCommand(parser *flags.Parser) bool {
@@ -15,5 +17,6 @@ func IsRegisterCommand(parser *flags.Parser) bool {
 }
 
 func HandleRegisterCommand(deps *application.AppDependencies, parser *flags.Parser, cmd *RegisterCommand) error {
-	return deps.US.Register(cmd.login, cmd.password)
+	ctx := context.Background()
+	return deps.US.Register(ctx, cmd.Login, cmd.Password)
 }

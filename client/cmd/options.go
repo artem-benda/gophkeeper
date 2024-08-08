@@ -2,15 +2,16 @@ package main
 
 import (
 	"errors"
-	"github.com/artem-benda/gphkeeper/client/internal/application/command"
-	"github.com/jessevdk/go-flags"
 	"os"
+
+	"github.com/artem-benda/gophkeeper/client/internal/application/command"
+	"github.com/jessevdk/go-flags"
 )
 
 type Options struct {
-	Endpoint  string                  `short:"e" long:"endpoint" description:"address and port of server to connect to" required:"true"`
-	CryptoKey string                  `short:"k" long:"crypto-key" description:"crypto key in base64std format to store your data securely" required:"true"`
-	Register  command.RegisterCommand `command:"register"`
+	Endpoint  string                  `short:"e" long:"endpoint" default:"localhost:8080" description:"address and port of server to connect to" required:"true"`
+	CryptoKey string                  `short:"k" long:"pass-key" default:"supersecretkey123" description:"pass key used to encrypt secret information" required:"true"`
+	Register  command.RegisterCommand `command:"register" alias:"r" description:"Register user"`
 }
 
 func mustParseOptions(opts *Options) *flags.Parser {
