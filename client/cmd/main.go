@@ -87,6 +87,20 @@ func main() {
 			slog.Error("Failed to execute remove secret  ", slog.Any("error", err))
 		}
 		slog.Info("Successfully executed remove secret command")
+	case command.IsGetSecretCommand(parser):
+		slog.Info("Executing get secret command...")
+		err := command.HandleGetSecretCommand(deps, parser, &opts.GetSecret)
+		if err != nil {
+			slog.Error("Failed to execute get secret  ", slog.Any("error", err))
+		}
+		slog.Info("Successfully executed get secret command")
+	case command.IsGetAllSecretsCommand(parser):
+		slog.Info("Executing get all secret command...")
+		err := command.HandleGetAllSecretsCommand(deps, parser, &opts.GetAllSecrets)
+		if err != nil {
+			slog.Error("Failed to execute get all secrets  ", slog.Any("error", err))
+		}
+		slog.Info("Successfully executed get all secrets command")
 	default:
 		slog.Error("Unknown command")
 	}
