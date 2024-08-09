@@ -5,8 +5,11 @@ import (
 	"errors"
 	"time"
 
+	"github.com/artem-benda/gophkeeper/server/internal/domain/contract"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/entity"
+	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -57,6 +60,10 @@ func (dao *SecretDAO) Insert(ctx context.Context, userID int64, guid string, nam
 	secretID := new(int64)
 	row := dao.DB.QueryRow(ctx, "insert into secrets(user_id, guid, name, enc_payload, created_at) values($1, $2, $3, $4, $5) returning id", userID, guid, name, encPayload, clientTimestamp)
 	err := row.Scan(secretID)
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) && pgErr.Code == pgerrcode.UniqueViolation {
+		return nil, contract.ErrSecretAlreadyExists
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -64,11 +71,17 @@ func (dao *SecretDAO) Insert(ctx context.Context, userID int64, guid string, nam
 }
 
 func (dao *SecretDAO) Update(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) error {
-	_, err := dao.DB.Exec(ctx, "update secrets set name = $1, enc_payload = $2, updated_at = $3 where user_id = $4 and guid = $5", name, encPayload, clientTimestamp, userID, guid)
+	tag, err := dao.DB.Exec(ctx, "update secrets set name = $1, enc_payload = $2, updated_at = $3 where user_id = $4 and guid = $5", name, encPayload, clientTimestamp, userID, guid)
+	if tag.RowsAffected() == 0 {
+		return contract.ErrSecretNotFound
+	}
 	return err
 }
 
 func (dao *SecretDAO) Delete(ctx context.Context, userID int64, guid string) error {
-	_, err := dao.DB.Exec(ctx, "delete from secrets where user_id = $1 AND guid = $1", userID, guid)
+	tag, err := dao.DB.Exec(ctx, "delete from secrets where user_id = $1 AND guid = $1", userID, guid)
+	if tag.RowsAffected() == 0 {
+		return contract.ErrSecretNotFound
+	}
 	return err
 }

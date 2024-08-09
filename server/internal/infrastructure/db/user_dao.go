@@ -4,8 +4,11 @@ import (
 	"context"
 	"errors"
 
+	"github.com/artem-benda/gophkeeper/server/internal/domain/contract"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/entity"
+	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -42,6 +45,10 @@ func (dao *UserDAO) Insert(ctx context.Context, user entity.User) (*int64, error
 	userID := new(int64)
 	row := dao.DB.QueryRow(ctx, "insert into users(login, password_hash) values($1, $2) returning id", user.Login, user.PasswordHash)
 	err := row.Scan(userID)
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) && pgErr.Code == pgerrcode.UniqueViolation {
+		return nil, contract.ErrUserAlreadyRegistered
+	}
 	if err != nil {
 		return nil, err
 	}
