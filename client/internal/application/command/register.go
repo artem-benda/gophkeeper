@@ -13,7 +13,7 @@ type RegisterCommand struct {
 }
 
 func IsRegisterCommand(parser *flags.Parser) bool {
-	return parser.Command.Find("register") != nil
+	return parser.Active.Name == "register"
 }
 
 func HandleRegisterCommand(deps *application.AppDependencies, parser *flags.Parser, cmd *RegisterCommand) error {

@@ -55,7 +55,7 @@ func (dao *SecretDAO) GetByUserID(ctx context.Context, userID int64) ([]entity.S
 
 func (dao *SecretDAO) Insert(ctx context.Context, userID int64, guid string, name string, encPayload []byte, clientTimestamp time.Time) (*int64, error) {
 	secretID := new(int64)
-	row := dao.DB.QueryRow(ctx, "insert into secrets(guid, name, enc_payload, created_at) values($1, $2, $3, $4) returning id", userID, name, encPayload, clientTimestamp)
+	row := dao.DB.QueryRow(ctx, "insert into secrets(user_id, guid, name, enc_payload, created_at) values($1, $2, $3, $4, $5) returning id", userID, guid, name, encPayload, clientTimestamp)
 	err := row.Scan(secretID)
 	if err != nil {
 		return nil, err

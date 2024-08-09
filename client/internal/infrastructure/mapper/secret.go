@@ -42,7 +42,7 @@ func MapEncryptedSecret(s *pb.Secret) *entity.SecretEncrypted {
 func MapEncryptedSecrets(s []*pb.Secret) []entity.SecretEncrypted {
 	secrets := make([]entity.SecretEncrypted, len(s))
 	for ind, v := range s {
-		secrets[ind] = *MapSecret(v)
+		secrets[ind] = *MapEncryptedSecret(v)
 	}
 	return secrets
 }

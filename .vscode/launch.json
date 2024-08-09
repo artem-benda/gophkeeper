@@ -10,14 +10,34 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/client/cmd",
-            "args": ["register", "--login=${input:login}", "--password=${input:password}"]
+            "args": ["register", "--login=${input:login}", "--password=${input:password}"],
+            "dlvFlags": ["--check-go-version=false"]
+        },
+        {
+            "name": "Launch Client - AddSecretLoginPassword",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/client/cmd",
+            "args": [
+              "add-secret-login-password",
+              "--login=${input:login}",
+              "--password=${input:password}",
+              "--name=logopass",
+              "--secret-login=sample",
+              "--secret-password=sample123",
+              "--metadata=test"
+            ],
+            "dlvFlags": ["--check-go-version=false"]
         },
         {
             "name": "Launch Server",
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceFolder}/server/cmd"
+            "program": "${workspaceFolder}/server/cmd",
+            "dlvFlags": ["--check-go-version=false"]
+
         }
     ],
     "inputs": [

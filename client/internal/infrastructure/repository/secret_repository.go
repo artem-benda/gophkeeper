@@ -7,8 +7,6 @@ import (
 	"github.com/artem-benda/gophkeeper/client/internal/domain/entity"
 	pb "github.com/artem-benda/gophkeeper/client/internal/infrastructure/grpc"
 	"github.com/artem-benda/gophkeeper/client/internal/infrastructure/mapper"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type secretRepository struct {
@@ -19,25 +17,9 @@ func NewSecretRepository(c pb.GophKeeperServiceClient) contract.SecretRepository
 	return &secretRepository{c}
 }
 
-func (r *secretRepository) Register(ctx context.Context, login string, password string) error {
-	req := &pb.RegisterRequest{Login: login, Password: password}
-	_, err := r.c.Register(ctx, req)
-	if e, ok := status.FromError(err); ok {
-		switch e.Code() {
-		case codes.AlreadyExists:
-			return contract.ErrUserAlreadyExists
-		case codes.InvalidArgument:
-			return contract.ErrUserInvalidCredentials
-		default:
-			return err
-		}
-	}
-	return err
-}
-
-func (r *secretRepository) Add(ctx context.Context, name string, encPayload []byte) (string, error) {
+func (r *secretRepository) Add(c context.Context, name string, encPayload []byte) (string, error) {
 	req := &pb.AddSecretRequest{Name: name, Payload: encPayload}
-	resp, err := r.c.AddSecret(ctx, req)
+	resp, err := r.c.AddSecret(c, req)
 	if err != nil {
 		return "", mapper.MapSecretError(err)
 	}
