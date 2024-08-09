@@ -13,7 +13,7 @@ func main() {
 	parser := mustParseOptions(opts)
 	client, conn := grpc.MustCreateGRPCClient(opts.Endpoint)
 	defer conn.Close()
-	deps := mustCreateAppDependencies(client)
+	deps := mustCreateAppDependencies(client, opts.PassKey)
 	// Handle Register command or else continue
 	switch {
 	case command.IsRegisterCommand(parser):

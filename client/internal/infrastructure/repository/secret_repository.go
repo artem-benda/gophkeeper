@@ -56,19 +56,19 @@ func (r *secretRepository) Remove(ctx context.Context, guid string) error {
 	return mapper.MapSecretError(err)
 }
 
-func (r *secretRepository) GetAll(ctx context.Context) ([]entity.Secret, error) {
+func (r *secretRepository) GetAll(ctx context.Context) ([]entity.SecretEncrypted, error) {
 	resp, err := r.c.GetAllSecrets(ctx, nil)
 	if err != nil {
 		return nil, mapper.MapSecretError(err)
 	}
-	return mapper.MapSecrets(resp.Secrets), nil
+	return mapper.MapEncryptedSecrets(resp.Secrets), nil
 }
 
-func (r *secretRepository) GetByGUID(ctx context.Context, guid string) (*entity.Secret, error) {
+func (r *secretRepository) GetByGUID(ctx context.Context, guid string) (*entity.SecretEncrypted, error) {
 	req := &pb.GetSecretRequest{Guid: guid}
 	resp, err := r.c.GetSecret(ctx, req)
 	if err != nil {
 		return nil, mapper.MapSecretError(err)
 	}
-	return mapper.MapSecret(resp.Secret), nil
+	return mapper.MapEncryptedSecret(resp.Secret), nil
 }

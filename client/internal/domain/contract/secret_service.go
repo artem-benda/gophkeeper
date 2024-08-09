@@ -7,8 +7,14 @@ import (
 )
 
 type SecretService interface {
-	Add(ctx context.Context, name string, encPayload []byte) (string, error)
-	Edit(ctx context.Context, guid string, name string, encPayload []byte) error
+	AddLoginPassword(ctx context.Context, name string, login string, password string, metadata string) (string, error)
+	AddText(ctx context.Context, name string, text string, metadata string) (string, error)
+	AddBinary(ctx context.Context, name string, data []byte, metadata string) (string, error)
+	AddBankingCard(ctx context.Context, name string, number string, owner string, dueTo string, cvv string, metadata string) (string, error)
+	ReplaceWithLoginPassword(ctx context.Context, guid string, name string, login string, password string, metadata string) error
+	ReplaceWithText(ctx context.Context, guid string, name string, text string, metadata string) error
+	ReplaceWithBinary(ctx context.Context, guid string, name string, data []byte, metadata string) error
+	ReplaceWithBankingCard(ctx context.Context, guid string, name string, number string, owner string, dueTo string, cvv string, metadata string) error
 	Remove(ctx context.Context, guid string) error
 	GetAll(ctx context.Context) ([]entity.Secret, error)
 	GetByGUID(ctx context.Context, guid string) (*entity.Secret, error)

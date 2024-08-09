@@ -26,11 +26,11 @@ func MapSecretError(grpcError error) error {
 	}
 }
 
-func MapSecret(s *pb.Secret) *entity.Secret {
+func MapEncryptedSecret(s *pb.Secret) *entity.SecretEncrypted {
 	if s == nil {
 		return nil
 	}
-	return &entity.Secret{
+	return &entity.SecretEncrypted{
 		GUID:       s.Guid,
 		Name:       s.Name,
 		CreatedAt:  s.CreatedAt.AsTime(),
@@ -39,8 +39,8 @@ func MapSecret(s *pb.Secret) *entity.Secret {
 	}
 }
 
-func MapSecrets(s []*pb.Secret) []entity.Secret {
-	secrets := make([]entity.Secret, len(s))
+func MapEncryptedSecrets(s []*pb.Secret) []entity.SecretEncrypted {
+	secrets := make([]entity.SecretEncrypted, len(s))
 	for ind, v := range s {
 		secrets[ind] = *MapSecret(v)
 	}
