@@ -21,6 +21,7 @@ type Options struct {
 	ReplaceSecretBankingCard   command.ReplaceSecretBankingCardCommand   `command:"replace-secret-banking-card" alias:"ab" description:"Replace secret with banking card"`
 	ReplaceSecretText          command.ReplaceSecretTextCommand          `command:"replace-secret-text" alias:"at" description:"Replace secret with text"`
 	ReplaceSecretBinary        command.ReplaceSecretBinaryCommand        `command:"replace-secret-binary" alias:"ab" description:"Replace secret with binary from file"`
+	RemoveSecret               command.RemoveSecretCommand               `command:"remove-secret" alias:"rm" description:"Remove secret"`
 }
 
 func mustParseOptions(opts *Options) *flags.Parser {

@@ -80,6 +80,13 @@ func main() {
 			slog.Error("Failed to execute replace secret binary from file  ", slog.Any("error", err))
 		}
 		slog.Info("Successfully executed replace secret binary from file command")
+	case command.IsRemoveSecretCommand(parser):
+		slog.Info("Executing remove secret command...")
+		err := command.HandleRemoveSecretCommand(deps, parser, &opts.RemoveSecret)
+		if err != nil {
+			slog.Error("Failed to execute remove secret  ", slog.Any("error", err))
+		}
+		slog.Info("Successfully executed remove secret command")
 	default:
 		slog.Error("Unknown command")
 	}
