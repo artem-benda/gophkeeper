@@ -10,11 +10,17 @@ import (
 )
 
 type Options struct {
-	Endpoint               string                                `short:"e" long:"endpoint" default:"localhost:8080" description:"address and port of server to connect to" required:"true"`
-	PassPhrase             string                                `short:"k" long:"pass-phrase" default:"supersecretkey123" description:"pass phrase used to encrypt secret information" required:"true"`
-	Register               command.RegisterCommand               `command:"register" alias:"r" description:"Register user"`
-	AddSecretLoginPassword command.AddSecretLoginPasswordCommand `command:"add-secret-login-password" alias:"alp" description:"Add secret login password"`
-	AssSecretBankingCardd  command.AddSecretBankingCardCommand   `command:"add-secret-banking-card" alias:"ab" description:"Add secret banking card"`
+	Endpoint                   string                                    `short:"e" long:"endpoint" default:"localhost:8080" description:"address and port of server to connect to" required:"true"`
+	PassPhrase                 string                                    `short:"k" long:"pass-phrase" default:"supersecretkey123" description:"pass phrase used to encrypt secret information" required:"true"`
+	Register                   command.RegisterCommand                   `command:"register" alias:"r" description:"Register user"`
+	AddSecretLoginPassword     command.AddSecretLoginPasswordCommand     `command:"add-secret-login-password" alias:"alp" description:"Add secret login password"`
+	AddSecretBankingCard       command.AddSecretBankingCardCommand       `command:"add-secret-banking-card" alias:"ab" description:"Add secret banking card"`
+	AddSecretText              command.AddSecretTextCommand              `command:"add-secret-text" alias:"at" description:"Add secret text"`
+	AddSecretBinary            command.AddSecretBinaryCommand            `command:"add-secret-binary" alias:"ab" description:"Add secret binary from file"`
+	ReplaceSecretLoginPassword command.ReplaceSecretLoginPasswordCommand `command:"replace-secret-login-password" alias:"alp" description:"Replace secret with login password"`
+	ReplaceSecretBankingCard   command.ReplaceSecretBankingCardCommand   `command:"replace-secret-banking-card" alias:"ab" description:"Replace secret with banking card"`
+	ReplaceSecretText          command.ReplaceSecretTextCommand          `command:"replace-secret-text" alias:"at" description:"Replace secret with text"`
+	ReplaceSecretBinary        command.ReplaceSecretBinaryCommand        `command:"replace-secret-binary" alias:"ab" description:"Replace secret with binary from file"`
 }
 
 func mustParseOptions(opts *Options) *flags.Parser {
