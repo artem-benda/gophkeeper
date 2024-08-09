@@ -8,6 +8,7 @@ import (
 	"github.com/artem-benda/gophkeeper/server/internal/domain/contract"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/entity"
 	"github.com/jackc/pgerrcode"
+	"github.com/jackc/pgx/pgtype"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -21,13 +22,21 @@ type SecretDAO struct {
 // GetByID - Получить по идентификатору
 func (dao *SecretDAO) GetByGUID(ctx context.Context, userID int64, guid string) (*entity.Secret, error) {
 	secret := entity.Secret{}
-	row := dao.DB.QueryRow(ctx, "SELECT id, guid, name, enc_payload, created_at, updated_at FROM secret WHERE guid = $1 and user_id = $2", guid, userID)
-	err := row.Scan(&secret.ID, &secret.GUID, &secret.Name, &secret.EncPayload, &secret.CreatedAt, &secret.UpdatedAt)
+	createdAt := new(pgtype.Timestamptz)
+	updatedAt := new(pgtype.Timestamptz)
+	row := dao.DB.QueryRow(ctx, "SELECT id, guid, name, enc_payload, created_at, updated_at FROM secrets WHERE guid = $1 and user_id = $2", guid, userID)
+	err := row.Scan(&secret.ID, &secret.GUID, &secret.Name, &secret.EncPayload, createdAt, updatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, err
+	}
+	if createdAt.Status != pgtype.Null {
+		secret.CreatedAt = createdAt.Time
+	}
+	if updatedAt.Status != pgtype.Null {
+		secret.UpdatedAt = updatedAt.Time
 	}
 	return &secret, nil
 }
@@ -43,9 +52,17 @@ func (dao *SecretDAO) GetByUserID(ctx context.Context, userID int64) ([]entity.S
 
 	for rows.Next() {
 		secret := entity.Secret{}
+		createdAt := new(pgtype.Timestamptz)
+		updatedAt := new(pgtype.Timestamptz)
 		err := rows.Scan(&secret.ID, &secret.GUID, &secret.Name, &secret.EncPayload, &secret.CreatedAt, &secret.UpdatedAt)
 		if err != nil {
 			return nil, err
+		}
+		if createdAt.Status != pgtype.Null {
+			secret.CreatedAt = createdAt.Time
+		}
+		if updatedAt.Status != pgtype.Null {
+			secret.UpdatedAt = updatedAt.Time
 		}
 		secrets = append(secrets, secret)
 	}

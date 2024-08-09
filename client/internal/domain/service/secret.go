@@ -163,6 +163,9 @@ func (s *secret) GetAll(ctx context.Context) ([]entity.Secret, error) {
 
 func (s *secret) GetByGUID(ctx context.Context, guid string) (*entity.Secret, error) {
 	e, err := s.r.GetByGUID(ctx, guid)
+	if err != nil {
+		return nil, err
+	}
 	payloadBinary := decrypt(s.PassPhrase, e.EncPayload)
 	payload := new(entity.SecretPayload)
 	err = proto.Unmarshal(payloadBinary, payload)

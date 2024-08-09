@@ -46,6 +46,8 @@ func printSecret(secret *entity.Secret) {
 			slog.String("Metadata", secret.Payload.Metadata),
 			slog.String("Login", v.LoginPassword.Login),
 			slog.String("Password", v.LoginPassword.Password),
+			slog.Time("CreatedAt", secret.CreatedAt),
+			slog.Time("UpdatedAt", secret.UpdatedAt),
 		)
 	case *entity.SecretPayload_Text:
 		slog.Info(
@@ -54,6 +56,8 @@ func printSecret(secret *entity.Secret) {
 			slog.String("Name", secret.Name),
 			slog.String("Metadata", secret.Payload.Metadata),
 			slog.String("Text", v.Text.Text),
+			slog.Time("CreatedAt", secret.CreatedAt),
+			slog.Time("UpdatedAt", secret.UpdatedAt),
 		)
 	case *entity.SecretPayload_BankingCard:
 		slog.Info(
@@ -65,6 +69,8 @@ func printSecret(secret *entity.Secret) {
 			slog.String("CardValidThru", v.BankingCard.ValidThru),
 			slog.String("CardOwner", v.BankingCard.OwnerName),
 			slog.String("CVV/CV2", v.BankingCard.CVV),
+			slog.Time("CreatedAt", secret.CreatedAt),
+			slog.Time("UpdatedAt", secret.UpdatedAt),
 		)
 	case *entity.SecretPayload_Binary:
 		slog.Info(
@@ -73,6 +79,8 @@ func printSecret(secret *entity.Secret) {
 			slog.String("Name", secret.Name),
 			slog.String("Metadata", secret.Payload.Metadata),
 			slog.String("Binary", v.Binary.String()),
+			slog.Time("CreatedAt", secret.CreatedAt),
+			slog.Time("UpdatedAt", secret.UpdatedAt),
 		)
 	}
 }
