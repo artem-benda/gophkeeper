@@ -1,14 +1,12 @@
-// Package entity - доменные сущности
 package entity
 
 import "time"
 
-// Secret - базовая информация о секретной информации
+// Secret - информация о секрете с расшифрованными данными
 type Secret struct {
-	GUID       string
-	Name       string
-	Metadata   string
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	EncPayload []byte
+	GUID      string
+	Name      string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Payload   *SecretPayload
 }

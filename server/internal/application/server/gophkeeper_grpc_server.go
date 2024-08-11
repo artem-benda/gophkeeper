@@ -82,20 +82,20 @@ func (s *GophKeeperGrpcServer) GetAllSecrets(ctx context.Context, _ *emptypb.Emp
 }
 
 // AddSecret - Добавить запись секретной информации
-func (s *GophKeeperGrpcServer) AddSecret(ctx context.Context, req *pb.AddSecretRequest) (*emptypb.Empty, error) {
+func (s *GophKeeperGrpcServer) AddSecret(ctx context.Context, req *pb.AddSecretRequest) (*pb.AddSecretResponse, error) {
 	userID := getUserIDFromContext(ctx)
-	_, err := s.SSvc.Add(ctx, userID, req.Guid, req.Name, req.Payload, req.ClientTimestamp.AsTime())
+	guid, err := s.SSvc.Add(ctx, userID, req.Name, req.Payload)
 	if err != nil {
 		return nil, mapSecretError(err)
 	}
 
-	return &emptypb.Empty{}, nil
+	return &pb.AddSecretResponse{Guid: guid}, nil
 }
 
 // UpdateSecret - Изменить запись секретной информации
 func (s *GophKeeperGrpcServer) UpdateSecret(ctx context.Context, req *pb.UpdateSecretRequest) (*emptypb.Empty, error) {
 	userID := getUserIDFromContext(ctx)
-	err := s.SSvc.Edit(ctx, userID, req.Guid, req.Name, req.Payload, req.ClientTimestamp.AsTime())
+	err := s.SSvc.Edit(ctx, userID, req.Guid, req.Name, req.Payload)
 	if err != nil {
 		return nil, mapSecretError(err)
 	}

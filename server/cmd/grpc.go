@@ -5,10 +5,10 @@ import (
 	"log/slog"
 	"net"
 
-	pb "github.com/artem-benda/gophkeeper/server/internal/application/grpc"
 	"github.com/artem-benda/gophkeeper/server/internal/application/middleware"
 	"github.com/artem-benda/gophkeeper/server/internal/application/server"
 	"github.com/artem-benda/gophkeeper/server/internal/domain/contract"
+	pb "github.com/artem-benda/gophkeeper/server/internal/infrastructure/grpc"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
 	g "google.golang.org/grpc"
 )
