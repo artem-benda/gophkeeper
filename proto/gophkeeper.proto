@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package gophkeeper;
+
+option go_package = "internal/infrastructure/grpc";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+// Register
+message RegisterRequest {
+    string login = 1;
+    string password = 2;
+}
+
+message RegisterResponse {
+    string token = 1;
+}
+
+// Login
+message LoginRequest {
+    string login = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    string token = 1;
+}
+
+// Secret
+message Secret {
+    string guid = 1;
+    string name = 2;
+    google.protobuf.Timestamp created_at = 3;
+    google.protobuf.Timestamp updated_at = 4;
+    bytes payload = 5;
+    int32 version = 6;
+}
+
+// GetSecret
+message GetSecretRequest {
+    string guid = 1;
+}
+
+message GetSecretResponse {
+    Secret secret = 1;
+}
+
+// GetAllSecrets
+message GetAllSecretsResponse {
+    repeated Secret secrets = 1;
+}
+
+// AddSecret
+message AddSecretRequest {
+    string name = 1;
+    bytes payload = 2;
+}
+
+message AddSecretResponse {
+    string guid = 1;
+}
+
+// UpdateSecret
+message UpdateSecretRequest {
+    string guid = 1;
+    string name = 2;
+    bytes payload = 3;
+}
+
+// DeleteSecret
+message DeleteSecretRequest {
+    string guid = 1;
+}
+
+service GophKeeperService {
+    rpc Register(RegisterRequest) returns (RegisterResponse);
+    rpc Login(LoginRequest) returns (LoginResponse);
+    rpc GetSecret(GetSecretRequest) returns (GetSecretResponse);
+    rpc GetAllSecrets(google.protobuf.Empty) returns (GetAllSecretsResponse);
+    rpc AddSecret(AddSecretRequest) returns (AddSecretResponse);
+    rpc UpdateSecret(UpdateSecretRequest) returns (google.protobuf.Empty);
+    rpc DeleteSecret(DeleteSecretRequest) returns (google.protobuf.Empty);
+}

@@ -1,0 +1,124 @@
+{
+    // Используйте IntelliSense, чтобы узнать о возможных атрибутах.
+    // Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.
+    // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Client - Help",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/client/cmd",
+            "args": ["-h"],
+            "dlvFlags": ["--check-go-version=false"]
+        },
+        {
+            "name": "Launch Client - Help add-secret-text",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/client/cmd",
+            "args": ["add-secret-text", "-h"],
+            "dlvFlags": ["--check-go-version=false"]
+        },
+        {
+            "name": "Launch Client - Register",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/client/cmd",
+            "args": ["register", "--login=${input:login}", "--password=${input:password}"],
+            "dlvFlags": ["--check-go-version=false"]
+        },
+        {
+            "name": "Launch Client - AddSecretLoginPassword",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/client/cmd",
+            "args": [
+              "add-secret-login-password",
+              "--login=${input:login}",
+              "--password=${input:password}",
+              "--name=logopass",
+              "--secret-login=sample",
+              "--secret-password=sample123",
+              "--metadata=test"
+            ],
+            "dlvFlags": ["--check-go-version=false"]
+        },
+        {
+            "name": "Launch Client - AddSecretText",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/client/cmd",
+            "args": [
+              "add-secret-text",
+              "--login=${input:login}",
+              "--password=${input:password}",
+              "--name=text",
+              "--secret-text=sample",
+              "--metadata=test"
+            ],
+            "dlvFlags": ["--check-go-version=false"]
+        },
+        {
+            "name": "Launch Client - GetSecret",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/client/cmd",
+            "args": [
+              "get-secret",
+              "--login=${input:login}",
+              "--password=${input:password}",
+              "--guid=${input:guid}"
+            ],
+            "dlvFlags": ["--check-go-version=false"]
+        },
+        {
+            "name": "Launch Client - GetAllSecrets",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/client/cmd",
+            "args": [
+              "get-all-secrets",
+              "--login=${input:login}",
+              "--password=${input:password}"
+            ],
+            "dlvFlags": ["--check-go-version=false"]
+        },
+        {
+            "name": "Launch Server",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/server/cmd",
+            "dlvFlags": ["--check-go-version=false"]
+
+        }
+    ],
+    "inputs": [
+      {
+        "id": "login",
+        "type": "promptString",
+        "description": "Enter login",
+        "default": "testuser"
+      },
+      {
+        "id": "password",
+        "type": "promptString",
+        "description": "Enter password",
+        "default": "testuser123"
+      },
+      {
+        "id": "guid",
+        "type": "promptString",
+        "description": "Enter secret guid",
+        "default": ""
+      }
+    ]
+}
